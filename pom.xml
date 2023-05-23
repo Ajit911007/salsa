@@ -9,9 +9,6 @@
   <url>http://maven.apache.org</url>
   <distributionManagement>  
 	<repository>
-		<id>nexus</id>
-		<name>ajit-release-repo Nexus/ IT Releases Nexus Repo</name>
-		<url>http://18.134.14.190:8081/repository/ajit-release-repo/</url>
 	</repository>
 	
 	<snapshotRepository>
