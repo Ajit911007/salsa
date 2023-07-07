@@ -14,7 +14,7 @@
 	<snapshotRepository>
 		<id>nexus</id>
 		<name>ajit-snapshot-repo Nexus Repo</name>
-		<url>http://18.134.14.190:8081/repository/ajit-snapshot-repo/</url>
+		<url>http://35.179.16.145:8081//repository/ajit-snapshot-repo/</url>
 	</snapshotRepository>	
 </distributionManagement>
   <dependencies>
