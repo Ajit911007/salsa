@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone repo') {
+            steps {
+                git branch: 'main', credentialsId: 'Git', url: 'https://github.com/Ajit911007/salsa.git'
+            }
+        }
+
+        stage('Maven Build') {
+            steps {
+                script {
+                    def mavenHome = tool name: "Maven-3.9.3", type: "maven"
+                    def mavenCMD = "${mavenHome}/bin/mvn"
+                    sh "${mavenCMD} clean package"
+                }
+            }
+        }
+
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('ajit-sonar9.9.1') {
+                        def mavenHome = tool name: "Maven-3.9.3", type: "maven"
+                        def mavenCMD = "${mavenHome}/bin/mvn"
+                        sh "${mavenCMD} sonar:sonar"
+                    }
+                }
+            }
+        }
+
+        stage('Upload Artifact to Nexus') {
+            steps {
+                nexusArtifactUploader artifacts: [[artifactId: 'Salsa-app', classifier: '', file: 'target/Salsa-app.war', type: 'war']],
+                    credentialsId: 'nexus-credentials', groupId: 'ajit.nexus', nexusUrl: '18.133.117.144:8081', nexusVersion: 'nexus3',
+                    protocol: 'http', repository: 'ajit-snapshot-repo', version: '01-SNAPSHOT'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                    sshagent(['Tomcat-Ec2-Credentials']) {
+                        sh 'scp -o StrictHostKeyChecking=no target/Salsa-app.war ec2-user@13.40.12.76:/home/ec2-user/apache-tomcat-10.1.10/webapps'
+                    }
+                }
+            }
+        }
+    }
+}
