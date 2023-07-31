@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: no
+  remote_user: anisble
+  tasks:
+   - name : Ping
+     ping:
+     remote_user: ansible
+...
